@@ -2,17 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+<!--	<parent>-->
+<!--		<groupId>org.springframework.boot</groupId>-->
+<!--		<artifactId>spring-boot-starter-parent</artifactId>-->
+<!--		<version>3.1.4</version>-->
+<!--		<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+<!--	</parent>-->
 	<groupId>com.xuecheng</groupId>
 	<artifactId>xuecheng-plus-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>xuecheng-plus-parent</name>
 	<description>xuecheng-plus-parent</description>
+	<!-- 夫工程的打包方式为pom -->
 	<packaging>pom</packaging>
 
 	<properties>
@@ -37,6 +38,7 @@
 		<okhttp.version>4.8.1</okhttp.version>
 		<swagger-spring-boot-starter.version>1.9.0.RELEASE</swagger-spring-boot-starter.version>
 		<elasticsearch.version>7.12.1</elasticsearch.version>
+		<log4j2.version>2.17.2</log4j2.version>
 	</properties>
 
 	<dependencyManagement>
@@ -188,6 +190,7 @@
 				<artifactId>elasticsearch</artifactId>
 				<version>${elasticsearch.version}</version>
 			</dependency>
+
 		</dependencies>
 
 	</dependencyManagement>
