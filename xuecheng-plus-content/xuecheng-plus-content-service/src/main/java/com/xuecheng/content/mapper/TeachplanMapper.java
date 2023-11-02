@@ -22,4 +22,5 @@ public interface TeachplanMapper extends BaseMapper<Teachplan> {
      */
     public List<TeachplanDto> selectTreeNodes(Long courseId);
 
+
 }

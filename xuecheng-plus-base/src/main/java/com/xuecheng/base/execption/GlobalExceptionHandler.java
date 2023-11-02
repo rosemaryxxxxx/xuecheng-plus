@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public RestErrorResponse customException(XueChengPlusException e) {
         log.error("【系统异常】{}",e.getErrMessage(),e);
-        return new RestErrorResponse(e.getErrMessage());
+        return new RestErrorResponse(e.getErrCode(),e.getErrMessage());
 
     }
 
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
         log.error("【系统异常】{}",e.getMessage(),e);
 
-        return new RestErrorResponse(CommonError.UNKOWN_ERROR.getErrMessage());
+        return new RestErrorResponse("120400",CommonError.UNKOWN_ERROR.getErrMessage());
     }
 
     @ResponseBody
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
         //拼接错误信息
         String msg = StringUtils.join(msgList, ",");
         log.error("【系统异常】{}",msg);
-        return new RestErrorResponse(msg);
+        return new RestErrorResponse("120400",msg);
     }
 
     @ResponseBody
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     public RestErrorResponse httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         String msg = e.getMessage();
         log.error("【系统异常】{}",msg);
-        return new RestErrorResponse(msg);
+        return new RestErrorResponse("120400",msg);
     }
 
 

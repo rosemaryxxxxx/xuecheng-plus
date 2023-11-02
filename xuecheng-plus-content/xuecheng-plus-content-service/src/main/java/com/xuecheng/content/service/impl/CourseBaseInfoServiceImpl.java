@@ -130,7 +130,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //插入课程基本信息表
         int insert = courseBaseMapper.insert(courseBaseNew);
         if(insert<=0){
-            throw new XueChengPlusException("新增课程信息失败");
+            throw new XueChengPlusException("1","新增课程信息失败");
         }
 
         //向课程营销信息表course_market写数据
@@ -141,7 +141,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         courseMarketNew.setId(courseId);
         int i = saveCourseMarket(courseMarketNew);
         if(i<=0){
-            throw new XueChengPlusException("保存课程营销信息失败");
+            throw new XueChengPlusException("1","保存课程营销信息失败");
         }
         //查询课程基本信息以及营销信息并返回
         return getCourseBaseInfo(courseId);
@@ -153,12 +153,12 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //收费规则
         String charge = courseMarketNew.getCharge();
         if(StringUtils.isBlank(charge)){
-            throw new XueChengPlusException("收费规则没有选择");
+            throw new XueChengPlusException("1","收费规则没有选择");
         }
         //收费规则为收费
         if(charge.equals("201001")){
             if(courseMarketNew.getPrice() == null || courseMarketNew.getPrice().floatValue()<=0){
-                throw new XueChengPlusException("课程为收费价格不能为空且必须大于0");
+                throw new XueChengPlusException("1","课程为收费价格不能为空且必须大于0");
             }
         }
         //根据id从课程营销表查询
@@ -211,12 +211,12 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase == null){
-            XueChengPlusException.cast("课程不存在");
+            XueChengPlusException.cast("1","课程不存在");
         }
 
         //校验本机构只能修改本机构的课程
         if(!courseBase.getCompanyId().equals(companyId)){
-            XueChengPlusException.cast("只能修改本机构的课程");
+            XueChengPlusException.cast("1","只能修改本机构的课程");
         }
 
         //封装基本信息的数据
@@ -226,7 +226,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //更新课程基本信息
         int i = courseBaseMapper.updateById(courseBase);
         if(i<=0){
-            XueChengPlusException.cast("课程基本信息更新失败");
+            XueChengPlusException.cast("1","课程基本信息更新失败");
         }
 
         //封装营销信息的数据
