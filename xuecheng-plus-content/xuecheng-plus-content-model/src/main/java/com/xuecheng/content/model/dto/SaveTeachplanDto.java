@@ -39,7 +39,6 @@ public class SaveTeachplanDto {
      */
     private String mediaType;
 
-
     /**
      * 课程标识
      */
@@ -49,7 +48,6 @@ public class SaveTeachplanDto {
      * 课程发布标识
      */
     private Long coursePubId;
-
 
     /**
      * 是否支持试学或预览（试看）

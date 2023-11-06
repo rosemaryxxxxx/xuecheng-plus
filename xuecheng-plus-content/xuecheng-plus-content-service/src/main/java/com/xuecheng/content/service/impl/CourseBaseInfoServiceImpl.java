@@ -5,16 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuecheng.base.execption.XueChengPlusException;
 import com.xuecheng.base.modle.PageParams;
 import com.xuecheng.base.modle.PageResult;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.dto.AddCourseDto;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.EditCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseCategory;
-import com.xuecheng.content.model.po.CourseMarket;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
@@ -37,6 +34,15 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Autowired
     CourseCategoryMapper courseCategoryMapper;
+
+    @Autowired
+    TeachplanMapper teachplanMapper;
+
+    @Autowired
+    CourseTeacherMapper courseTeacherMapper;
+
+    @Autowired
+    TeachplanMediaMapper teachplanMediaMapper;
 
 
     /**
@@ -238,6 +244,55 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //查询课程信息
         CourseBaseInfoDto courseBaseInfo = getCourseBaseInfo(courseId);
         return courseBaseInfo;
+
+    }
+
+    @Transactional
+    @Override
+    public void deleteCourseBase(Long courseId) {
+        //删除课程需要删除课程相关的基本信息、营销信息、课程计划、课程教师信息。
+        //课程的审核状态为未提交时方可删除。
+        CourseBase courseBaseDelete = courseBaseMapper.selectById(courseId);
+        String status = courseBaseDelete.getStatus();
+        if(!Objects.equals(status, "203001")){
+            XueChengPlusException.cast("1","请删除未提交状态的课程！");
+        }
+        //删除courseBase
+        int i = courseBaseMapper.deleteById(courseId);
+        if(i<=0){
+            XueChengPlusException.cast("1","删除课程基本信息失败");
+        }
+
+        //删除营销信息
+        //营销信息表的主键为课程id
+        int i1 = courseMarketMapper.deleteById(courseId);
+        if(i1<=0){
+            XueChengPlusException.cast("1","删除课程营销信息失败");
+        }
+
+        //删除课程计划
+        LambdaQueryWrapper<Teachplan> teachplanLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        teachplanLambdaQueryWrapper.eq(Teachplan::getCourseId, courseId);
+        int i2 = teachplanMapper.delete(teachplanLambdaQueryWrapper);
+        if(i2<=0){
+            XueChengPlusException.cast("1","删除课程计划信息失败");
+        }
+
+        //删除计划-媒资信息
+        LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TeachplanMedia::getCourseId, courseId);
+        int i4 = teachplanMediaMapper.delete(queryWrapper);
+        if(i4<=0){
+            XueChengPlusException.cast("1","删除课程计划-媒资信息失败");
+        }
+
+        //删除课程教师信息
+        LambdaQueryWrapper<CourseTeacher> courseTeacherLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        courseTeacherLambdaQueryWrapper.eq(CourseTeacher::getCourseId, courseId);
+        int i3 = courseTeacherMapper.delete(courseTeacherLambdaQueryWrapper);
+        if(i3<=0){
+            XueChengPlusException.cast("1","删除课程教师信息失败");
+        }
 
     }
 
