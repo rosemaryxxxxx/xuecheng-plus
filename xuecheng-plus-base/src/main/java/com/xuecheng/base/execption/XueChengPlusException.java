@@ -53,6 +53,11 @@ public class XueChengPlusException extends RuntimeException {
         this.errMessage = errMessage;
     }
 
+    public XueChengPlusException(String message){
+        this.errMessage = message;
+    }
+
+
 
     public String getErrCode() {
         return errCode;
@@ -70,12 +75,16 @@ public class XueChengPlusException extends RuntimeException {
         this.errMessage = errMessage;
     }
 
-        public static void cast(CommonError commonError) {
+    public static void cast(CommonError commonError) {
         throw new XueChengPlusException(commonError.getErrCode(), commonError.getErrMessage());
     }
 
     public static void cast(String errCode,String errMessage) {
         throw new XueChengPlusException(errCode,errMessage);
+    }
+
+    public static void cast(String errMessage){
+        throw new XueChengPlusException(errMessage);
     }
 
 }
