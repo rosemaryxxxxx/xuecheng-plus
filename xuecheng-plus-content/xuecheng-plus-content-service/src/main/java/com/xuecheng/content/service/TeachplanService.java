@@ -4,6 +4,7 @@ import com.xuecheng.content.model.dto.BindTeachplanMediaDto;
 import com.xuecheng.content.model.dto.SaveTeachplanDto;
 import com.xuecheng.content.model.dto.TeachplanDto;
 import com.xuecheng.content.model.po.TeachplanMedia;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -55,4 +56,12 @@ public interface TeachplanService {
      * @return com.xuecheng.content.model.po.TeachplanMedia
      */
     public TeachplanMedia associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
+
+    /**
+     * 删除教学计划和媒资信息的绑定
+     * @param teachPlanId
+     * @param mediaId
+     */
+    public void deleteTeachplanMedia(String teachPlanId , String mediaId);
+
 }

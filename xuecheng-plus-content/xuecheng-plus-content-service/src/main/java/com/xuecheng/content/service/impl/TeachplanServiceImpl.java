@@ -174,8 +174,18 @@ public class TeachplanServiceImpl implements TeachplanService {
         teachplanMedia.setMediaFilename(bindTeachplanMediaDto.getFileName());
         teachplanMedia.setMediaId(bindTeachplanMediaDto.getMediaId());
         teachplanMedia.setCreateDate(LocalDateTime.now());
-        teachplanMediaMapper.insert(teachplanMedia);
+        int insert = teachplanMediaMapper.insert(teachplanMedia);
+        if(insert <= 0) {
+            XueChengPlusException.cast("绑定媒资失败");
+        }
         return teachplanMedia;
+    }
+
+    @Override
+    public void deleteTeachplanMedia(String teachPlanId, String mediaId) {
+        LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TeachplanMedia::getTeachplanId, teachPlanId).eq(TeachplanMedia::getMediaId,mediaId);
+        teachplanMediaMapper.delete(queryWrapper);
     }
 
     /**

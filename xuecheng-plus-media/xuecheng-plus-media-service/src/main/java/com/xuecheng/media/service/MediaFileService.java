@@ -7,10 +7,8 @@ import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @description 媒资文件管理业务类
@@ -103,4 +101,11 @@ public interface MediaFileService {
   * @return
   */
  public boolean addMediaFilesToMinIO(String localFilePath,String mimeType,String bucket, String objectName);
+
+ /**
+  *根据媒资id查询媒资详细
+  * @param mediaId
+  * @return
+  */
+ public MediaFiles getFileById(String mediaId);
 }
