@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.xuecheng.messagesdk.service.MqMessageService;
+import com.xuecheng.messagesdk.service.impl.MqMessageServiceImpl;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,5 +28,10 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
+//    @Bean
+//    public MqMessageService getMqMessageService(){
+//        MqMessageService mqMessageService = new MqMessageServiceImpl();
+//        return mqMessageService;
+//    }
 
 }

@@ -22,6 +22,7 @@ import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -237,7 +238,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 
 
   @Override
-  public UploadFileResultDto updatefile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath) {
+  public UploadFileResultDto updatefile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath, String objectName) {
     //1.将文件上传到minio
 
     File file = new File(localFilePath);
@@ -254,7 +255,10 @@ public class MediaFileServiceImpl implements MediaFileService {
     String defaultFolderPath = getDefaultFolderPath();
     //文件md5值，作为文件再minio中的文件名
     String md5 = getFileMd5(new File(localFilePath));
-    String objectName = defaultFolderPath + md5 + extension;
+    //判断是否传入了objectName，传入了则按照传入的路径存
+    if(StringUtils.isEmpty(objectName)){
+        objectName = defaultFolderPath + md5 + extension;
+    }
     boolean result = addMediaFilesToMinIO(localFilePath, mimeType, bucket_mediafiles, objectName);
     if(!result){
       XueChengPlusException.cast("上传文件失败！");

@@ -28,14 +28,16 @@ public interface MediaFileService {
  */
  public PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
+
  /**
   * 上传文件接口
   * @param companyId 机构id
   * @param uploadFileParamsDto 文件的信息
   * @param localFilePath 文件的本地路径
+  * @param objectName 如果传入objectName，要按照objectName的目录存储，如果没传入objectName按照年月日存储
   * @return
   */
- public UploadFileResultDto updatefile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
+ public UploadFileResultDto updatefile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath, String objectName);
 
  /**
   * 提取事务方法，以解决事务失效的问题

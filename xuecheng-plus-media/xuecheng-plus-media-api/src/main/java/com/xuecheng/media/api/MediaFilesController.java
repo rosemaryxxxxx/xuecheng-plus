@@ -43,7 +43,8 @@ public class MediaFilesController {
     @ApiOperation("上传文件")
     @RequestMapping(value = "/upload/coursefile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile upload,@RequestParam(value = "folder",required=false) String folder,@RequestParam(value = "objectName",required=false) String objectName) throws IOException {
+    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile upload,
+                                      @RequestParam(value = "objectName",required=false) String objectName) throws IOException {
 
         Long companyId = 1232141425L;
         UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
@@ -60,7 +61,7 @@ public class MediaFilesController {
         //文件路径
         String absolutePath = tempFile.getAbsolutePath();
         //上传文件
-        UploadFileResultDto uploadFileResultDto = mediaFileService.updatefile(companyId,uploadFileParamsDto,absolutePath);
+        UploadFileResultDto uploadFileResultDto = mediaFileService.updatefile(companyId,uploadFileParamsDto,absolutePath,objectName);
 
         return uploadFileResultDto;
     }
