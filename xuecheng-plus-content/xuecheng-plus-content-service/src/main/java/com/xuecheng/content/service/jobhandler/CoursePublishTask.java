@@ -1,6 +1,10 @@
 package com.xuecheng.content.service.jobhandler;
 
 import com.xuecheng.base.execption.XueChengPlusException;
+import com.xuecheng.content.feignclient.SearchServiceClient;
+import com.xuecheng.content.mapper.CoursePublishMapper;
+import com.xuecheng.content.model.dto.CourseIndex;
+import com.xuecheng.content.model.po.CoursePublish;
 import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.messagesdk.model.po.MqMessage;
 import com.xuecheng.messagesdk.service.MessageProcessAbstract;
@@ -8,6 +12,7 @@ import com.xuecheng.messagesdk.service.MqMessageService;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +33,10 @@ public class CoursePublishTask extends MessageProcessAbstract {
 
     @Autowired
     CoursePublishService coursePublishService;
+    @Autowired
+    SearchServiceClient searchServiceClient;
+    @Autowired
+    CoursePublishMapper coursePublishMapper;
 
     /**
      *  任务调度入口
@@ -127,14 +136,35 @@ public class CoursePublishTask extends MessageProcessAbstract {
         //查询数据库，取出该阶段的执行状态
         int stageThree = mqMessageService.getStageThree(taskId);
         if(stageThree > 0){
-            log.debug("课程信息已缓存至redis，无需处理，课程id：{}", courseId);
+            log.debug("课程信息已经同步索引到es，无需处理，课程id：{}", courseId);
             return;
         }
         //开始保存课程索引信息
+        Boolean result = saveCourseIndex(courseId);
+        if(result){
+            //保存第三阶段状态，在mq表中将stage_three字段的值设置成1
+            mqMessageService.completedStageThree(taskId);
+        }
 
+    }
 
-        //保存第二阶段状态，在mq表中将stage_three字段的值设置成1
-        mqMessageService.completedStageThree(taskId);
+    /**
+     * 同步课程信息到索引
+     * @param courseId 课程id
+     * @return
+     */
+    private Boolean saveCourseIndex(Long courseId){
+
+        //取出课程发布消息
+        CoursePublish coursePulish = coursePublishMapper.selectById(courseId);
+        CourseIndex courseIndex = new CourseIndex();
+        BeanUtils.copyProperties(coursePulish,courseIndex);
+        //调用远程服务api添加课程信息到索引
+        Boolean add = searchServiceClient.add(courseIndex);
+        if(!add){
+            XueChengPlusException.cast("添加索引失败！");
+        }
+        return add;
 
     }
 
